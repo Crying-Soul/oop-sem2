@@ -1,106 +1,54 @@
 #include "Field.hpp"
 
-
-Field::Field(uint8_t rowCount, uint8_t colCount) 
-  : rows(rowCount), columns(colCount), field(rowCount, std::vector<FieldCell>(colCount)) {
-    create(); 
-}
-
-// ??????????? ???????????
-Field::Field(const Field& other) : rows(other.rows), columns(other.columns), field(other.field) {}
-
-// ???????? ???????????? ???????????
-Field& Field::operator=(const Field& other) {
-  if (this == &other) return *this; // ?????? ?? ????????????????
-  rows = other.rows;
-  columns = other.columns;
-  field = other.field;
-  return *this;
-}
-
-// ??????????? ???????????
-Field::Field(Field&& other) noexcept : rows(other.rows), columns(other.columns), field(std::move(other.field)) {
-  other.rows = 0;
-  other.columns = 0;
-}
-
-// ???????? ???????????? ???????????
-Field& Field::operator=(Field&& other) noexcept {
-  if (this == &other) return *this;
-  rows = other.rows;
-  columns = other.columns;
-  field = std::move(other.field);
-  other.rows = 0;
-  other.columns = 0;
-  return *this;
+Field::Field(int rowCount, int colCount) : rows(rowCount), columns(colCount) {
+    field.resize(rows, std::vector<FieldCell>(columns));
 }
 
 void Field::create() {
-  for (uint8_t x = 0; x < rows; ++x) {
-    for (uint8_t y = 0; y < columns; ++y) {
-      field[x][y].cord = {x, y};
-      field[x][y].value = CellValue::Water;
-      field[x][y].status = CellStatus::Hidden;
+    for (int x = 0; x < rows; ++x) {
+        for (int y = 0; y < columns; ++y) {
+            field[x][y].cord = {x, y};
+            field[x][y].value = '~';  
+        }
     }
-  }
 }
 
 void Field::display() const {
-  std::cout << "+";
-  for (uint8_t y = 0; y < columns; ++y) {
-    std::cout << "---+";
-  }
-  std::cout << std::endl;
-
-  for (uint8_t x = 0; x < rows; ++x) {
-    std::cout << "|";
-    for (uint8_t y = 0; y < columns; ++y) {
-      std::cout << " " << static_cast<char>(field[x][y].value) << " |";
-    }
-    std::cout << std::endl;
     std::cout << "+";
-    for (uint8_t y = 0; y < columns; ++y) {
-      std::cout << "---+";
+    for (int y = 0; y < columns; y++) {
+        std::cout << "---+";
     }
     std::cout << std::endl;
-  }
-}
 
-void Field::statusDisplay() const {
-  std::cout << "+";
-  for (uint8_t y = 0; y < columns; ++y) {
-    std::cout << "---+";
-  }
-  std::cout << std::endl;
+    for (int x = 0; x < rows; ++x) {
+        std::cout << "|";
+        for (int y = 0; y < columns; ++y) {
+            std::cout << " " << field[x][y].value << " |";
+        }
+        std::cout << std::endl;
 
-  for (uint8_t x = 0; x < rows; ++x) {
-    std::cout << "|";
-    for (uint8_t y = 0; y < columns; ++y) {
-      std::cout << " " << (field[x][y].status == CellStatus::Hidden ? 'H' : 'R') << " |";
+        std::cout << "+";
+        for (int y = 0; y < columns; ++y) {
+            std::cout << "---+";
+        }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
-    std::cout << "+";
-    for (uint8_t y = 0; y < columns; ++y) {
-      std::cout << "---+";
+}
+
+void Field::setValueAt(Coordinate cord, char value) {
+    if (!isValidCoordinate(cord)) {
+        throw std::out_of_range("Coordinate out of range");
     }
-    std::cout << std::endl;
-  }
+    field[cord.x][cord.y].value = value;
 }
 
-void Field::setValueAt(Coordinate cord, CellValue value) {
-  if (!isValidCoordinate(cord)) {
-    throw std::out_of_range("Coordinate out of range");
-  }
-  field[cord.x][cord.y].value = value;
-}
-
-CellValue Field::getValueAt(Coordinate cord) const {
-  if (!isValidCoordinate(cord)) {
-    throw std::out_of_range("Coordinate out of range");
-  }
-  return field[cord.x][cord.y].value;
+char Field::getValueAt(Coordinate cord) const {
+    if (!isValidCoordinate(cord)) {
+        throw std::out_of_range("Coordinate out of range");
+    }
+    return field[cord.x][cord.y].value;
 }
 
 bool Field::isValidCoordinate(Coordinate cord) const {
-  return cord.x < rows && cord.y < columns;
+    return cord.x < rows && cord.y < columns;  
 }
