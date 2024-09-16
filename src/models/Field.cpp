@@ -6,25 +6,25 @@ Field::Field(uint8_t rowCount, uint8_t colCount)
     create(); 
 }
 
-// ??????????? ???????????
+
 Field::Field(const Field& other) : rows(other.rows), columns(other.columns), field(other.field) {}
 
-// ???????? ???????????? ???????????
+
 Field& Field::operator=(const Field& other) {
-  if (this == &other) return *this; // ?????? ?? ????????????????
+  if (this == &other) return *this; 
   rows = other.rows;
   columns = other.columns;
   field = other.field;
   return *this;
 }
 
-// ??????????? ???????????
+
 Field::Field(Field&& other) noexcept : rows(other.rows), columns(other.columns), field(std::move(other.field)) {
   other.rows = 0;
   other.columns = 0;
 }
 
-// ???????? ???????????? ???????????
+
 Field& Field::operator=(Field&& other) noexcept {
   if (this == &other) return *this;
   rows = other.rows;
@@ -48,7 +48,7 @@ void Field::create() {
 void Field::display() const {
   std::cout << "+";
   for (uint8_t y = 0; y < columns; ++y) {
-    std::cout << "---+";
+    std::cout << "~~~+";
   }
   std::cout << std::endl;
 
@@ -60,7 +60,7 @@ void Field::display() const {
     std::cout << std::endl;
     std::cout << "+";
     for (uint8_t y = 0; y < columns; ++y) {
-      std::cout << "---+";
+      std::cout << "~~~+";
     }
     std::cout << std::endl;
   }
