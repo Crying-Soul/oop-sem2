@@ -1,39 +1,69 @@
 #ifndef FIELD_HPP
 #define FIELD_HPP
 
-#include <vector>
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
+#include <vector>
+#include <cstdint>
+
+enum class CellStatus {
+  Hidden, // 'H'
+  Revealed // 'R'
+};
+
+
+enum class CellValue {
+  Water = ' ',
+  ShipPart = 'S',
+  Hit = 'X',
+  Destroyed = '0'
+};
 
 struct Coordinate {
-    unsigned int x;
-    unsigned int y;
+  uint8_t x;
+  uint8_t y;
 };
 
 struct FieldCell {
-    Coordinate cord;
-    char value;
+  Coordinate cord;
+  CellStatus status;
+  CellValue value;
 };
 
 class Field {
 private:
-    int rows;
-    int columns;
-    std::vector<std::vector<FieldCell>> field;  
+  uint8_t rows;
+  uint8_t columns;
+  std::vector<std::vector<FieldCell>> field;
 
 public:
-    Field(int rows, int columns);
-    
-    bool isValidCoordinate(Coordinate cord) const;
+  // ??????????? ? ????????? ??????????
+  Field(uint8_t rowsCount, uint8_t columnsCount);
 
-    void create();
-    void display() const;
+  // ??????????? ???????????
+  Field(const Field& other);
 
-    char getValueAt(Coordinate cord) const;
-    void setValueAt(Coordinate cord, char value);
+  // ???????? ???????????? ???????????
+  Field& operator=(const Field& other);
 
-    int getRows() const { return rows; }
-    int getColumns() const { return columns; }
+  // ??????????? ???????????
+  Field(Field&& other) noexcept;
+
+  // ???????? ???????????? ???????????
+  Field& operator=(Field&& other) noexcept;
+
+  // ??????????
+  ~Field() = default;
+
+  bool isValidCoordinate(Coordinate cord) const;
+
+  void create();
+  void display() const;
+  void statusDisplay() const;
+
+  CellValue getValueAt(Coordinate cord) const;
+  void setValueAt(Coordinate cord, CellValue value);
+
 };
 
 #endif
