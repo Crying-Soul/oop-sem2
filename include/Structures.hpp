@@ -17,6 +17,8 @@ enum class CellValue {
   Destroyed = '0'
 };
 
+
+
 struct FieldCell {
   Coordinate cord;
   CellStatus status;

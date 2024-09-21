@@ -1,17 +1,27 @@
 #include "Field.hpp"
-#include "Ship.hpp"
 #include "ShipManager.hpp"
 #include <memory>
 
 int main() {
-  auto field1 = std::make_shared<Field>(10, 15);
+  auto field1 = std::make_shared<Field>(10, 10);
   field1->create();
 
-  auto s1 = std::make_shared<Ship>(4);
-  auto s2 = std::make_shared<Ship>(3);
+  auto ships = {
+      std::make_shared<Ship>(4), 
+      std::make_shared<Ship>(3), 
+      std::make_shared<Ship>(3), 
+      std::make_shared<Ship>(2),
+      std::make_shared<Ship>(2),
+      std::make_shared<Ship>(2),
+      std::make_shared<Ship>(1),
+      std::make_shared<Ship>(1),
+      std::make_shared<Ship>(1), 
+      std::make_shared<Ship>(1) 
+  };
 
-  field1->placeShip(s1, {0, 2}, true);
-  field1->placeShip(s2, {3, 4}, false);
+  for (const auto &ship : ships) {
+    field1->setRandom(ship);
+  }
 
   field1->display();
 
