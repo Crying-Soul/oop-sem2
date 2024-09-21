@@ -2,7 +2,7 @@
 #include <iomanip>
 Field::Field(uint8_t colCount, uint8_t rowCount)
     : rows(rowCount), columns(colCount),
-      field(rowCount, std::vector<FieldCell>(colCount)) {
+      field(rowCount, std::vector<FieldCell>(colCount)), colors() {
   create();
 }
 
@@ -102,7 +102,7 @@ bool Field::isValidCoordinate(Coordinate cord) const {
   return cord.y < rows && cord.x < columns;
 }
 
-bool Field::placeShip(std::shared_ptr<Ship> ship, Coordinate cord,
+bool Field::placeShipByCords(const std::shared_ptr<Ship>& ship, Coordinate cord,
                       bool vertical) {
   if (!isPlaceAvailable(ship, cord, vertical)) {
     return false;
@@ -127,7 +127,7 @@ bool Field::placeShip(std::shared_ptr<Ship> ship, Coordinate cord,
   return true;
 }
 
-bool Field::isPlaceAvailable(std::shared_ptr<Ship> ship, Coordinate cord,
+bool Field::isPlaceAvailable(const std::shared_ptr<Ship>& ship, Coordinate cord,
                              bool vertical) {
   uint8_t size = ship->getSize();
 
@@ -152,11 +152,10 @@ bool Field::isPlaceAvailable(std::shared_ptr<Ship> ship, Coordinate cord,
   return true;
 }
 
-void Field::setRandom(std::shared_ptr<Ship> ship) {
+void Field::placeShipByRandCords(const std::shared_ptr<Ship>& ship) {
   if (!ship)
     return;
 
-  uint8_t shipSize = ship->getSize();
   Coordinate newCord;
 
   bool placed = false;
@@ -165,13 +164,13 @@ void Field::setRandom(std::shared_ptr<Ship> ship) {
 
   while (!placed) {
 
-    newCord.x = std::rand() % columns;
-    newCord.y = std::rand() % rows;
+    newCord.x = static_cast<uint8_t>(std::rand() % columns);
+    newCord.y = static_cast<uint8_t>(std::rand() % rows);
 
     bool vertical = std::rand() % 2 == 0;
 
     if (isPlaceAvailable(ship, newCord, vertical)) {
-      placed = placeShip(ship, newCord, vertical);
+      placed = placeShipByCords(ship, newCord, vertical);
     }
   }
 }

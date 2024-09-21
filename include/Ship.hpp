@@ -3,7 +3,6 @@
 
 #include "Structures.hpp"
 #include <iostream>
-#include <stdexcept>
 #include <vector>
 
 class Ship {

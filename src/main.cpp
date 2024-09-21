@@ -1,10 +1,10 @@
 #include "Field.hpp"
 #include "ShipManager.hpp"
-#include <memory>
+
 
 int main() {
-  auto field1 = std::make_shared<Field>(10, 10);
-  field1->create();
+  auto GameField = std::make_shared<Field>(10, 10);
+  GameField->create();
 
   auto ships = {
       std::make_shared<Ship>(4), 
@@ -19,11 +19,14 @@ int main() {
       std::make_shared<Ship>(1) 
   };
 
+  ShipManager manager;
+
   for (const auto &ship : ships) {
-    field1->setRandom(ship);
+    manager.addShip(ship);
+    GameField->placeShipByRandCords(ship);
   }
 
-  field1->display();
-
+  GameField->display();
+  manager.printAllShips();
   return 0;
 }

@@ -3,8 +3,7 @@
 
 #include "Field.hpp"
 #include "Ship.hpp"
-#include <algorithm>
-#include <vector>
+
 
 class ShipManager {
 private:
@@ -13,7 +12,7 @@ private:
 public:
   ShipManager();
 
-  ~ShipManager() = default;
+  void addShip(const std::shared_ptr<Ship>& ship);
 
   void printAllShips() const;
 };

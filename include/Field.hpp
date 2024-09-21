@@ -3,11 +3,8 @@
 
 #include "Ship.hpp"
 #include "Structures.hpp"
-#include <cstdlib> // ??? rand() ? srand()
-#include <ctime>   // ??? time()
-#include <iostream>
+#include <cstdlib>
 #include <memory>
-#include <stdexcept>
 #include <vector>
 
 class Field {
@@ -26,15 +23,18 @@ private:
   } colors;
 
   bool isValidCoordinate(Coordinate cord) const;
-  bool isPlaceAvailable(std::shared_ptr<Ship> ship, Coordinate cord,
+  bool isPlaceAvailable(const std::shared_ptr<Ship>& ship, Coordinate cord,
                         bool vertical);
   CellValue getValueAt(Coordinate cord) const;
   void setValueAt(Coordinate cord, CellValue value);
 
 public:
   Field(uint8_t rowsCount, uint8_t columnsCount);
-  bool placeShip(std::shared_ptr<Ship> ship, Coordinate cord, bool vertical);
-  void setRandom(std::shared_ptr<Ship> ship);
+
+  bool placeShipByCords(const std::shared_ptr<Ship>& ship, Coordinate cord,
+                        bool vertical);
+  void placeShipByRandCords(const std::shared_ptr<Ship>& ship);
+
   void create();
   void display() const;
   void displayStatus() const;

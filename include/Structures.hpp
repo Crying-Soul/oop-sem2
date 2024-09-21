@@ -1,6 +1,7 @@
 #ifndef STRUCT_HPP
 #define STRUCT_HPP
 
+#include <array>
 #include <cstdint>
 
 struct Coordinate {
@@ -16,8 +17,6 @@ enum class CellValue {
   Hit = 'X',
   Destroyed = '0'
 };
-
-
 
 struct FieldCell {
   Coordinate cord;
