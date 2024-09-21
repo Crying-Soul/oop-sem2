@@ -1,69 +1,50 @@
 #include "Ship.hpp"
 
-Ship::Ship(int shipSize) : segments(shipSize, 2), size(shipSize) {
+Ship::Ship(int shipSize) : size(shipSize) {
   if (shipSize < 1 || shipSize > 4) {
     throw std::invalid_argument("Ship size must be between 1 and 4.");
   }
-}
 
-// ??????????? ???????????
-Ship::Ship(const Ship& other) : segments(other.segments), size(other.size) {}
-
-// ???????? ???????????? ???????????
-Ship& Ship::operator=(const Ship& other) {
-  if (this == &other) return *this;  // ?????? ?? ????????????????
-  segments = other.segments;
-  size = other.size;
-  return *this;
-}
-
-// ??????????? ???????????
-Ship::Ship(Ship&& other) noexcept : segments(std::move(other.segments)), size(other.size) {
-  other.size = 0;
-}
-
-// ???????? ???????????? ???????????
-Ship& Ship::operator=(Ship&& other) noexcept {
-  if (this == &other) return *this;
-  segments = std::move(other.segments);
-  size = other.size;
-  other.size = 0;
-  return *this;
+  segments.resize(shipSize);
+  for (int i = 0; i < shipSize; ++i) {
+    segments[i] = {2, {0, 0}};
+  }
 }
 
 void Ship::printState() const {
   std::cout << "Ship state: ";
-  for (const auto& segment : segments) {
-    std::cout << segment << " ";
+  for (const auto &segment : segments) {
+    std::cout << "(" << static_cast<int>(segment.hp) << " " << "{"
+              << static_cast<int>(segment.pos.x) << ","
+              << static_cast<int>(segment.pos.y) << "})" << " ";
   }
   std::cout << std::endl;
 }
 
-void Ship::updateSegment(int segmentId, int value) {
-  if (segmentId >= 0 && segmentId < size) {
-    segments[segmentId] += value;
+void Ship::updateSegmentHp(uint8_t segmentId, int8_t value) {
+  if (segmentId < size) {
+    segments[segmentId].hp += value;
+    
+  } else {
+    throw std::out_of_range("Invalid segment ID.");
+  }
+}
+
+void Ship::updateSegmentCoord(uint8_t segmentId, Coordinate pos) {
+  if (segmentId < size) {
+    segments[segmentId].pos = pos;
   } else {
     throw std::out_of_range("Invalid segment ID.");
   }
 }
 
 bool Ship::isDestroyed() const {
-  for (const auto& segment : segments) {
-    if (segment > 0) {
+  for (const auto &segment : segments) {
+    if (segment.hp > 0) {
       return false;
     }
   }
   return true;
 }
 
-int Ship::getSize() const {
-  return size;
-}
-
-int Ship::getSegment(int segmentId) const {
-  if (segmentId >= 0 && segmentId < size) {
-    return segments[segmentId];
-  } else {
-    throw std::out_of_range("Invalid segment ID.");
-  }
-}
+int Ship::getSize() const { return size; }

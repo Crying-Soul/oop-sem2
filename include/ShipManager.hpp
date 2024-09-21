@@ -3,6 +3,7 @@
 
 #include "Field.hpp"
 #include "Ship.hpp"
+#include <algorithm>
 #include <memory>
 #include <vector>
 
