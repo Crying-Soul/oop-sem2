@@ -4,21 +4,16 @@
 #include <memory>
 
 int main() {
-  auto field1 = std::make_shared<Field>(10, 10);
+  auto field1 = std::make_shared<Field>(10, 15);
   field1->create();
-  field1->display();
 
   auto s1 = std::make_shared<Ship>(4);
-  // auto s2 = std::make_shared<Ship>(4);
+  auto s2 = std::make_shared<Ship>(3);
 
-  s1->printState();
-  
+  field1->placeShip(s1, {0, 2}, true);
+  field1->placeShip(s2, {3, 4}, false);
 
-  // ShipManager s_manager(field1);
-  // s_manager.placeShip(s2, {5, 5}, false);
-  // s_manager.placeShip(s1, {2, 2}, true);
-  // s_manager.placeShip(s1, {6, 3}, false);
-  // s_manager.placeShip(s1, {8, 1}, true);
+  field1->display();
 
   return 0;
 }

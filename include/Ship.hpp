@@ -9,16 +9,16 @@
 class Ship {
 private:
   std::vector<ShipSegment> segments;
-  int size;
+  uint8_t size;
 
 public:
-  explicit Ship(int shipSize);
+  explicit Ship(uint8_t shipSize);
 
   void printState() const;
   void updateSegmentHp(uint8_t segmentId, int8_t value);
   void updateSegmentCoord(uint8_t segmentId, Coordinate pos);
   bool isDestroyed() const;
-  int getSize() const;
+  uint8_t getSize() const;
 };
 
 #endif

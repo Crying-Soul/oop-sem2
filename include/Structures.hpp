@@ -24,7 +24,7 @@ struct FieldCell {
 };
 
 struct ShipSegment {
-  uint8_t hp;
+  int8_t hp;
   Coordinate pos;
 };
 

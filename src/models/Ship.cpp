@@ -1,30 +1,32 @@
 #include "Ship.hpp"
 
-Ship::Ship(int shipSize) : size(shipSize) {
+Ship::Ship(uint8_t shipSize) : segments(shipSize), size(shipSize) {
   if (shipSize < 1 || shipSize > 4) {
     throw std::invalid_argument("Ship size must be between 1 and 4.");
   }
 
-  segments.resize(shipSize);
   for (int i = 0; i < shipSize; ++i) {
     segments[i] = {2, {0, 0}};
   }
 }
 
 void Ship::printState() const {
-  std::cout << "Ship state: ";
-  for (const auto &segment : segments) {
-    std::cout << "(" << static_cast<int>(segment.hp) << " " << "{"
-              << static_cast<int>(segment.pos.x) << ","
-              << static_cast<int>(segment.pos.y) << "})" << " ";
+  std::cout << "=== Ship State ===\n";
+
+  for (size_t i = 0; i < segments.size(); ++i) {
+    std::cout << "Segment " << i + 1 << ": "
+              << "HP = " << static_cast<int>(segments[i].hp) << ", "
+              << "Position = {" << static_cast<int>(segments[i].pos.x) << ", "
+              << static_cast<int>(segments[i].pos.y) << "}\n";
   }
-  std::cout << std::endl;
+
+  std::cout << "===================\n";
 }
 
 void Ship::updateSegmentHp(uint8_t segmentId, int8_t value) {
   if (segmentId < size) {
     segments[segmentId].hp += value;
-    
+
   } else {
     throw std::out_of_range("Invalid segment ID.");
   }
@@ -47,4 +49,4 @@ bool Ship::isDestroyed() const {
   return true;
 }
 
-int Ship::getSize() const { return size; }
+uint8_t Ship::getSize() const { return size; }
