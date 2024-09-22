@@ -7,30 +7,26 @@ Ship::Ship(uint8_t shipSize)
     throw std::invalid_argument("Ship size must be between 1 and 4.");
   }
 
-  for (int i = 0; i < shipSize; ++i) {
-    segments[i] = {2, {0, 0}, SegmentStatus::Intact};
-  }
 }
 
-void Ship::printState() const {
-  std::cout << "============ Ship State ============\n";
-
-  std::cout << "ID: " << id << " Size: " << (int)size
+void Ship::printState() const noexcept {
+  std::cout << "============ Ship State ============\n"
+            << "ID: " << id << " Size: " << static_cast<int>(size)
             << " Vertical: " << (vertical ? "Yes" : "No") << std::endl;
 
   for (size_t i = 0; i < segments.size(); ++i) {
-    std::cout << "Segment " << i + 1 << ": "
-              << "HP = " << (int)segments[i].hp << ", "
-              << "Position = {" << (int)segments[i].coord.x << ", "
-              << (int)segments[i].coord.y << "}\n";
+    std::cout << "Segment " << (i + 1) << ": "
+              << "HP = " << static_cast<int>(segments[i].hp) << ", "
+              << "Position = {" << static_cast<int>(segments[i].coord.x) << ", "
+              << static_cast<int>(segments[i].coord.y) << "}\n";
   }
 
   std::cout << "====================================\n";
 }
 
-bool Ship::occupiesCoordinate(Coordinate coord) const {
+bool Ship::occupiesCoordinate(Coordinate coord) const noexcept {
   for (const auto &segment : segments) {
-    if (segment.coord.x == coord.x && segment.coord.y == coord.y) {
+    if (segment.coord == coord) {
       return true;
     }
   }
@@ -39,17 +35,18 @@ bool Ship::occupiesCoordinate(Coordinate coord) const {
 
 void Ship::handleAttack(Coordinate coord) {
   for (auto &segment : segments) {
-    if (segment.coord.x == coord.x && segment.coord.y == coord.y) {
-      segment.hp -= 1;
+    if (segment.coord == coord) {
+      segment.hp--;
       if (segment.hp <= 0) {
         segment.status = SegmentStatus::Destroyed;
-        std::cout << "Destroyed Segment at (" << (int)coord.x << ", " << (int)coord.y
-                  << ")!\n";
+        std::cout << "Destroyed Segment at (" << static_cast<int>(coord.x) 
+                  << ", " << static_cast<int>(coord.y) << ")!\n";
       } else {
         segment.status = SegmentStatus::Damaged;
-        std::cout << "Hit segment at (" << (int)coord.x << ", " << (int)coord.y
-                  << ")!\n";
+        std::cout << "Hit segment at (" << static_cast<int>(coord.x) 
+                  << ", " << static_cast<int>(coord.y) << ")!\n";
       }
+      break; // Stop checking after hitting a segment
     }
   }
 }
@@ -62,7 +59,7 @@ void Ship::setSegmentCoord(uint8_t segmentId, Coordinate coord) {
   }
 }
 
-bool Ship::isDestroyed() {
+bool Ship::isDestroyed() noexcept {
   for (const auto &segment : segments) {
     if (segment.status != SegmentStatus::Destroyed) {
       return false;
@@ -71,15 +68,20 @@ bool Ship::isDestroyed() {
   status = ShipStatus::Destroyed;
   return true;
 }
-void Ship::updateOrientation(bool isVertical) { this->vertical = isVertical; }
 
-uint8_t Ship::getSize() const { return size; }
-
-uint32_t Ship::generateId() {
-  auto now =
-      std::chrono::high_resolution_clock::now().time_since_epoch().count();
-
-  return static_cast<uint32_t>(std::hash<uint8_t>()(size)) ^
-         static_cast<uint32_t>(now);
+void Ship::updateOrientation(bool isVertical) noexcept { 
+  vertical = isVertical; 
 }
-uint32_t Ship::getId() const { return id; }
+
+uint8_t Ship::getSize() const noexcept { 
+  return size; 
+}
+
+uint32_t Ship::generateId() noexcept {
+  auto now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+  return static_cast<uint32_t>(std::hash<uint8_t>()(size)) ^ static_cast<uint32_t>(now);
+}
+
+uint32_t Ship::getId() const noexcept { 
+  return id; 
+}

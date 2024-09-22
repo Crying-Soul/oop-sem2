@@ -1,12 +1,42 @@
 #include "Field.hpp"
-#include <iomanip>
-Field::Field(uint8_t colCount, uint8_t rowCount)
-    : rows(rowCount), columns(colCount),
-      field(rowCount, std::vector<FieldCell>(colCount)), colors() {
+
+Field::Field(uint8_t rowsCount, uint8_t columnsCount) noexcept
+    : rows(rowsCount), columns(columnsCount),
+      field(rowsCount, std::vector<FieldCell>(columnsCount)), colors() {
   create();
 }
 
-void Field::create() {
+Field::Field(const Field &other)
+    : rows(other.rows), columns(other.columns), field(other.field), colors() {}
+
+Field &Field::operator=(const Field &other) {
+  if (this != &other) {
+    rows = other.rows;
+    columns = other.columns;
+    field = other.field;
+  }
+  return *this;
+}
+
+Field::Field(Field &&other) noexcept
+    : rows(other.rows), columns(other.columns), field(std::move(other.field)),
+      colors() {
+  other.rows = 0;
+  other.columns = 0;
+}
+
+Field &Field::operator=(Field &&other) noexcept {
+  if (this != &other) {
+    rows = other.rows;
+    columns = other.columns;
+    field = std::move(other.field);
+    other.rows = 0;
+    other.columns = 0;
+  }
+  return *this;
+}
+
+void Field::create() noexcept {
   for (uint8_t y = 0; y < rows; ++y) {
     for (uint8_t x = 0; x < columns; ++x) {
       field[y][x].coord = {x, y};
@@ -16,11 +46,13 @@ void Field::create() {
   }
 }
 
-void Field::display() const {
+void Field::display() const noexcept {
   std::cout << colors.headerColor << "    ";
   for (uint8_t x = 0; x < columns; ++x) {
     std::cout << " " << static_cast<char>('A' + x) << " ";
-    std::cout << "+";
+    if (x < columns - 1) {
+      std::cout << "|"; // ???????????? ???????????
+    }
   }
   std::cout << colors.resetColor << std::endl;
 
@@ -31,15 +63,14 @@ void Field::display() const {
   std::cout << colors.resetColor << std::endl;
 
   for (uint8_t y = 0; y < rows; ++y) {
-    std::cout << std::setw(2) << (y + 1) << " |";
+    std::cout << colors.headerColor << std::setw(2) << (y + 1) << " |"
+              << colors.resetColor;
     for (uint8_t x = 0; x < columns; ++x) {
       CellValue value = field[y][x].value;
       std::string cellColor;
 
       switch (value) {
       case CellValue::WaterHidden:
-        cellColor = colors.cellWaterColor;
-        break;
       case CellValue::WaterRevealed:
         cellColor = colors.cellWaterColor;
         break;
@@ -53,10 +84,11 @@ void Field::display() const {
         cellColor = colors.cellDestroyedColor;
         break;
       }
-      std::cout << cellColor << " " << static_cast<char>(value)
-                << colors.resetColor << " |";
+      std::cout << cellColor << " " << static_cast<char>(value) << " "
+                << colors.resetColor << "|"; // ????????? ???????
     }
     std::cout << std::endl;
+
     std::cout << colors.headerColor << "   +";
     for (uint8_t x = 0; x < columns; ++x) {
       std::cout << "---+";
@@ -65,7 +97,7 @@ void Field::display() const {
   }
 }
 
-void Field::displayStatus() const {
+void Field::displayStatus() const noexcept {
   std::cout << "+";
   for (uint8_t x = 0; x < columns; ++x) {
     std::cout << "---+";
@@ -101,7 +133,7 @@ CellValue Field::getValueAt(Coordinate cord) const {
   return field[cord.y][cord.x].value;
 }
 
-bool Field::isValidCoordinate(Coordinate cord) const {
+bool Field::isValidCoordinate(Coordinate cord) const noexcept {
   return cord.y < rows && cord.x < columns;
 }
 
@@ -126,7 +158,7 @@ bool Field::placeShipByCords(const std::shared_ptr<Ship> &ship, Coordinate cord,
 }
 
 bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
-                             bool vertical) {
+                             bool vertical) const noexcept {
   uint8_t size = ship->getSize();
 
   uint8_t startX = cord.x > 0 ? cord.x - 1 : 0;
@@ -155,16 +187,13 @@ void Field::placeShipByRandCords(const std::shared_ptr<Ship> &ship) {
     return;
 
   Coordinate newCord;
-
   bool placed = false;
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
   while (!placed) {
-
     newCord.x = static_cast<uint8_t>(std::rand() % columns);
     newCord.y = static_cast<uint8_t>(std::rand() % rows);
-
     bool vertical = std::rand() % 2 == 0;
 
     if (isPlaceAvailable(ship, newCord, vertical)) {
@@ -179,13 +208,20 @@ void Field::attack(Coordinate cord) {
     return;
   }
   FieldCell &cell = field[cord.y][cord.x];
-  if (cell.value == CellValue::ShipPart) {
+  switch (cell.value) {
+  case CellValue::ShipPart:
     cell.value = CellValue::Hit;
-  } else if (cell.value == CellValue::Hit) {
+    break;
+  case CellValue::Hit:
     cell.value = CellValue::Destroyed;
-  } else if (cell.value == CellValue::WaterHidden) {
+    break;
+  case CellValue::WaterHidden:
     cell.value = CellValue::WaterRevealed;
     cell.status = CellStatus::Revealed;
     std::cout << "Missed!\n";
+    break;
+  default:
+    std::cout << "Already attacked!\n";
+    break;
   }
 }
