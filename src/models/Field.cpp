@@ -9,8 +9,8 @@ Field::Field(uint8_t colCount, uint8_t rowCount)
 void Field::create() {
   for (uint8_t y = 0; y < rows; ++y) {
     for (uint8_t x = 0; x < columns; ++x) {
-      field[y][x].cord = {x, y};
-      field[y][x].value = CellValue::WaterHiden;
+      field[y][x].coord = {x, y};
+      field[y][x].value = CellValue::WaterHidden;
       field[y][x].status = CellStatus::Hidden;
     }
   }
@@ -37,7 +37,7 @@ void Field::display() const {
       std::string cellColor;
 
       switch (value) {
-      case CellValue::WaterHiden:
+      case CellValue::WaterHidden:
         cellColor = colors.cellWaterColor;
         break;
       case CellValue::WaterRevealed:
@@ -141,7 +141,7 @@ bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
   for (uint8_t y = startY; y <= endY; ++y) {
     for (uint8_t x = startX; x <= endX; ++x) {
       if (!isValidCoordinate({x, y}) ||
-          getValueAt({x, y}) != CellValue::WaterHiden) {
+          getValueAt({x, y}) != CellValue::WaterHidden) {
         return false;
       }
     }
@@ -183,7 +183,7 @@ void Field::attack(Coordinate cord) {
     cell.value = CellValue::Hit;
   } else if (cell.value == CellValue::Hit) {
     cell.value = CellValue::Destroyed;
-  } else if (cell.value == CellValue::WaterHiden) {
+  } else if (cell.value == CellValue::WaterHidden) {
     cell.value = CellValue::WaterRevealed;
     cell.status = CellStatus::Revealed;
     std::cout << "Missed!\n";

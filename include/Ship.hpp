@@ -3,7 +3,6 @@
 
 #include "Structures.hpp"
 #include <chrono>
-#include <functional>
 #include <iostream>
 #include <vector>
 
@@ -19,13 +18,13 @@ public:
   explicit Ship(uint8_t shipSize);
 
   void printState() const;
-  void setSegmentCoord(uint8_t segmentId, Coordinate pos);
+  void setSegmentCoord(uint8_t segmentId, Coordinate coord);
   void updateOrientation(bool isVertical);
-  bool occupiesCoordinate(Coordinate cord) const;
+  bool occupiesCoordinate(Coordinate coord) const;
   uint32_t generateId();
   uint32_t getId() const;
 
-  void handleAttack(Coordinate cord);
+  void handleAttack(Coordinate coord);
   bool isDestroyed();
   uint8_t getSize() const;
   

@@ -21,42 +21,42 @@ void Ship::printState() const {
   for (size_t i = 0; i < segments.size(); ++i) {
     std::cout << "Segment " << i + 1 << ": "
               << "HP = " << (int)segments[i].hp << ", "
-              << "Position = {" << (int)segments[i].pos.x << ", "
-              << (int)segments[i].pos.y << "}\n";
+              << "Position = {" << (int)segments[i].coord.x << ", "
+              << (int)segments[i].coord.y << "}\n";
   }
 
   std::cout << "====================================\n";
 }
 
-bool Ship::occupiesCoordinate(Coordinate cord) const {
+bool Ship::occupiesCoordinate(Coordinate coord) const {
   for (const auto &segment : segments) {
-    if (segment.pos.x == cord.x && segment.pos.y == cord.y) {
+    if (segment.coord.x == coord.x && segment.coord.y == coord.y) {
       return true;
     }
   }
   return false;
 }
 
-void Ship::handleAttack(Coordinate cord) {
+void Ship::handleAttack(Coordinate coord) {
   for (auto &segment : segments) {
-    if (segment.pos.x == cord.x && segment.pos.y == cord.y) {
+    if (segment.coord.x == coord.x && segment.coord.y == coord.y) {
       segment.hp -= 1;
       if (segment.hp <= 0) {
         segment.status = SegmentStatus::Destroyed;
-        std::cout << "Destroyed Segment at (" << (int)cord.x << ", " << (int)cord.y
+        std::cout << "Destroyed Segment at (" << (int)coord.x << ", " << (int)coord.y
                   << ")!\n";
       } else {
         segment.status = SegmentStatus::Damaged;
-        std::cout << "Hit segment at (" << (int)cord.x << ", " << (int)cord.y
+        std::cout << "Hit segment at (" << (int)coord.x << ", " << (int)coord.y
                   << ")!\n";
       }
     }
   }
 }
 
-void Ship::setSegmentCoord(uint8_t segmentId, Coordinate pos) {
+void Ship::setSegmentCoord(uint8_t segmentId, Coordinate coord) {
   if (segmentId < size) {
-    segments[segmentId].pos = pos;
+    segments[segmentId].coord = coord;
   } else {
     throw std::out_of_range("Invalid segment ID.");
   }

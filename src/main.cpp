@@ -2,33 +2,23 @@
 #include "ShipManager.hpp"
 
 int main() {
-  auto GameField = std::make_shared<Field>(10, 10);
-  GameField->create();
+  Field gameField(10, 10);
+
+  gameField.create();
 
   ShipManager manager;
 
   manager.createShipsDefault();
 
-  auto ships = manager.getAllShips();
-  auto ship = ships[0];
-  GameField->placeShipByCords(ship, {0, 0});
+  auto fleet = manager.getAllShips();
+ 
 
-  // for (const auto &ship : ships) {
-  //   GameField->placeShipByRandCords(ship);
-  // }
+  for (const auto &ship : fleet) {
+    gameField.placeShipByRandCords(ship);
+  }
 
-  // GameField->display();
-  GameField->attack({0, 0});
-  manager.attack({0, 0});
-  GameField->attack({0, 0});
-  manager.attack({0,0});
-  // GameField->attack({0, 2});
-  // GameField->attack({0, 3});
+  gameField.display();
 
-  GameField->display();
 
-  ship->printState();
-
-  // manager.printAllShips();
   return 0;
 }

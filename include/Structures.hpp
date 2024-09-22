@@ -4,7 +4,9 @@
 #include <cstdint>
 
 enum class CellStatus { Hidden, Revealed };
+
 enum class SegmentStatus { Intact, Damaged, Destroyed };
+
 enum class ShipStatus { Intact, Damaged, Destroyed };
 
 struct Coordinate {
@@ -12,8 +14,8 @@ struct Coordinate {
   uint8_t y;
 };
 
-enum class CellValue {
-  WaterHiden = ' ',
+enum class CellValue : char {
+  WaterHidden = ' ',
   WaterRevealed = '~',
   ShipPart = 'S',
   Hit = 'X',
@@ -21,14 +23,14 @@ enum class CellValue {
 };
 
 struct FieldCell {
-  Coordinate cord;
+  Coordinate coord;
   CellStatus status;
   CellValue value;
 };
 
 struct ShipSegment {
   int8_t hp;
-  Coordinate pos;
+  Coordinate coord;
   SegmentStatus status;
 };
 
