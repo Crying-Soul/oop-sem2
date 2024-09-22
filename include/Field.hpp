@@ -23,17 +23,18 @@ private:
   } colors;
 
   bool isValidCoordinate(Coordinate cord) const;
-  bool isPlaceAvailable(const std::shared_ptr<Ship>& ship, Coordinate cord,
+  bool isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
                         bool vertical);
   CellValue getValueAt(Coordinate cord) const;
   void setValueAt(Coordinate cord, CellValue value);
 
 public:
   Field(uint8_t rowsCount, uint8_t columnsCount);
+  void attack(Coordinate cord);
 
-  bool placeShipByCords(const std::shared_ptr<Ship>& ship, Coordinate cord,
-                        bool vertical);
-  void placeShipByRandCords(const std::shared_ptr<Ship>& ship);
+  bool placeShipByCords(const std::shared_ptr<Ship> &ship, Coordinate cord,
+                        bool vertical = false);
+  void placeShipByRandCords(const std::shared_ptr<Ship> &ship);
 
   void create();
   void display() const;

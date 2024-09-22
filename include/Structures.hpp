@@ -1,18 +1,20 @@
 #ifndef STRUCT_HPP
 #define STRUCT_HPP
 
-#include <array>
 #include <cstdint>
+
+enum class CellStatus { Hidden, Revealed };
+enum class SegmentStatus { Intact, Damaged, Destroyed };
+enum class ShipStatus { Intact, Damaged, Destroyed };
 
 struct Coordinate {
   uint8_t x;
   uint8_t y;
 };
 
-enum class CellStatus { Hidden, Revealed };
-
 enum class CellValue {
-  Water = ' ',
+  WaterHiden = ' ',
+  WaterRevealed = '~',
   ShipPart = 'S',
   Hit = 'X',
   Destroyed = '0'
@@ -27,6 +29,7 @@ struct FieldCell {
 struct ShipSegment {
   int8_t hp;
   Coordinate pos;
+  SegmentStatus status;
 };
 
 #endif

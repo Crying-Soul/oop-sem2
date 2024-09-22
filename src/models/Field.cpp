@@ -10,7 +10,7 @@ void Field::create() {
   for (uint8_t y = 0; y < rows; ++y) {
     for (uint8_t x = 0; x < columns; ++x) {
       field[y][x].cord = {x, y};
-      field[y][x].value = CellValue::Water;
+      field[y][x].value = CellValue::WaterHiden;
       field[y][x].status = CellStatus::Hidden;
     }
   }
@@ -37,7 +37,10 @@ void Field::display() const {
       std::string cellColor;
 
       switch (value) {
-      case CellValue::Water:
+      case CellValue::WaterHiden:
+        cellColor = colors.cellWaterColor;
+        break;
+      case CellValue::WaterRevealed:
         cellColor = colors.cellWaterColor;
         break;
       case CellValue::ShipPart:
@@ -102,32 +105,27 @@ bool Field::isValidCoordinate(Coordinate cord) const {
   return cord.y < rows && cord.x < columns;
 }
 
-bool Field::placeShipByCords(const std::shared_ptr<Ship>& ship, Coordinate cord,
-                      bool vertical) {
+bool Field::placeShipByCords(const std::shared_ptr<Ship> &ship, Coordinate cord,
+                             bool vertical) {
   if (!isPlaceAvailable(ship, cord, vertical)) {
     return false;
   }
 
+  ship->updateOrientation(vertical);
   int size = ship->getSize();
 
-  if (vertical) {
-    for (uint8_t i = 0; i < size; ++i) {
-      Coordinate newCord = {cord.x, static_cast<uint8_t>(cord.y + i)};
-      ship->updateSegmentCoord(i, newCord);
-      setValueAt(newCord, CellValue::ShipPart);
-    }
-  } else {
-    for (uint8_t i = 0; i < size; ++i) {
-      Coordinate newCord = {static_cast<uint8_t>(cord.x + i), cord.y};
-      ship->updateSegmentCoord(i, newCord);
-      setValueAt(newCord, CellValue::ShipPart);
-    }
+  for (uint8_t i = 0; i < size; ++i) {
+    Coordinate newCord =
+        vertical ? Coordinate{cord.x, static_cast<uint8_t>(cord.y + i)}
+                 : Coordinate{static_cast<uint8_t>(cord.x + i), cord.y};
+    ship->setSegmentCoord(i, newCord);
+    setValueAt(newCord, CellValue::ShipPart);
   }
 
   return true;
 }
 
-bool Field::isPlaceAvailable(const std::shared_ptr<Ship>& ship, Coordinate cord,
+bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
                              bool vertical) {
   uint8_t size = ship->getSize();
 
@@ -143,7 +141,7 @@ bool Field::isPlaceAvailable(const std::shared_ptr<Ship>& ship, Coordinate cord,
   for (uint8_t y = startY; y <= endY; ++y) {
     for (uint8_t x = startX; x <= endX; ++x) {
       if (!isValidCoordinate({x, y}) ||
-          getValueAt({x, y}) != CellValue::Water) {
+          getValueAt({x, y}) != CellValue::WaterHiden) {
         return false;
       }
     }
@@ -152,7 +150,7 @@ bool Field::isPlaceAvailable(const std::shared_ptr<Ship>& ship, Coordinate cord,
   return true;
 }
 
-void Field::placeShipByRandCords(const std::shared_ptr<Ship>& ship) {
+void Field::placeShipByRandCords(const std::shared_ptr<Ship> &ship) {
   if (!ship)
     return;
 
@@ -172,5 +170,22 @@ void Field::placeShipByRandCords(const std::shared_ptr<Ship>& ship) {
     if (isPlaceAvailable(ship, newCord, vertical)) {
       placed = placeShipByCords(ship, newCord, vertical);
     }
+  }
+}
+
+void Field::attack(Coordinate cord) {
+  if (!isValidCoordinate(cord)) {
+    std::cout << "Invalid coordinates!\n";
+    return;
+  }
+  FieldCell &cell = field[cord.y][cord.x];
+  if (cell.value == CellValue::ShipPart) {
+    cell.value = CellValue::Hit;
+  } else if (cell.value == CellValue::Hit) {
+    cell.value = CellValue::Destroyed;
+  } else if (cell.value == CellValue::WaterHiden) {
+    cell.value = CellValue::WaterRevealed;
+    cell.status = CellStatus::Revealed;
+    std::cout << "Missed!\n";
   }
 }
