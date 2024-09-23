@@ -23,6 +23,7 @@ Field::Field(Field &&other) noexcept
       colors() {
   other.rows = 0;
   other.columns = 0;
+  other.field.clear();
 }
 
 Field &Field::operator=(Field &&other) noexcept {
@@ -51,7 +52,7 @@ void Field::display() const noexcept {
   for (uint8_t x = 0; x < columns; ++x) {
     std::cout << " " << static_cast<char>('A' + x) << " ";
     if (x < columns - 1) {
-      std::cout << "|"; // ???????????? ???????????
+      std::cout << "|";
     }
   }
   std::cout << colors.resetColor << std::endl;
@@ -85,7 +86,7 @@ void Field::display() const noexcept {
         break;
       }
       std::cout << cellColor << " " << static_cast<char>(value) << " "
-                << colors.resetColor << "|"; // ????????? ???????
+                << colors.resetColor << "|";
     }
     std::cout << std::endl;
 
@@ -137,8 +138,8 @@ bool Field::isValidCoordinate(Coordinate cord) const noexcept {
   return cord.y < rows && cord.x < columns;
 }
 
-bool Field::placeShipByCords(const std::shared_ptr<Ship> &ship, Coordinate cord,
-                             bool vertical) {
+bool Field::placeShipByCoords(const std::shared_ptr<Ship> &ship,
+                              Coordinate cord, bool vertical) {
   if (!isPlaceAvailable(ship, cord, vertical)) {
     return false;
   }
@@ -182,7 +183,7 @@ bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
   return true;
 }
 
-void Field::placeShipByRandCords(const std::shared_ptr<Ship> &ship) {
+void Field::placeShipByRandCoords(const std::shared_ptr<Ship> &ship) {
   if (!ship)
     return;
 
@@ -197,7 +198,7 @@ void Field::placeShipByRandCords(const std::shared_ptr<Ship> &ship) {
     bool vertical = std::rand() % 2 == 0;
 
     if (isPlaceAvailable(ship, newCord, vertical)) {
-      placed = placeShipByCords(ship, newCord, vertical);
+      placed = placeShipByCoords(ship, newCord, vertical);
     }
   }
 }

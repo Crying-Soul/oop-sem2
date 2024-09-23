@@ -6,19 +6,35 @@ Ship::Ship(uint8_t shipSize)
   if (shipSize < 1 || shipSize > 4) {
     throw std::invalid_argument("Ship size must be between 1 and 4.");
   }
-
 }
 
 void Ship::printState() const noexcept {
   std::cout << "============ Ship State ============\n"
-            << "ID: " << id << " Size: " << static_cast<int>(size)
-            << " Vertical: " << (vertical ? "Yes" : "No") << std::endl;
+            << "ID: " << id << "\n"
+            << "Size: " << static_cast<int>(size) << "\n"
+            << "Orientation: " << (vertical ? "Vertical" : "Horizontal") << "\n"
+            << "Status: "
+            << (status == ShipStatus::Intact
+                    ? "Intact"
+                    : (status == ShipStatus::Destroyed ? "Destroyed"
+                                                       : "Damaged"))
+            << "\n------------------------------------\n";
+
+  std::cout << std::setw(7) << "Segment" << std::setw(10) << "Status"
+            << std::setw(6) << "HP" << std::setw(13) << "Position\n";
+  std::cout << "------------------------------------\n";
 
   for (size_t i = 0; i < segments.size(); ++i) {
-    std::cout << "Segment " << (i + 1) << ": "
-              << "HP = " << static_cast<int>(segments[i].hp) << ", "
-              << "Position = {" << static_cast<int>(segments[i].coord.x) << ", "
-              << static_cast<int>(segments[i].coord.y) << "}\n";
+    std::string segmentStatus =
+        (segments[i].status == SegmentStatus::Intact
+             ? "Intact"
+             : (segments[i].status == SegmentStatus::Destroyed ? "Destroyed"
+                                                               : "Damaged"));
+
+    std::cout << std::setw(7) << (i + 1) << std::setw(10) << segmentStatus
+              << std::setw(5) << static_cast<int>(segments[i].hp)
+              << std::setw(7) << "{" << static_cast<int>(segments[i].coord.x)
+              << ", " << static_cast<int>(segments[i].coord.y) << "}\n";
   }
 
   std::cout << "====================================\n";
@@ -39,23 +55,29 @@ void Ship::handleAttack(Coordinate coord) {
       segment.hp--;
       if (segment.hp <= 0) {
         segment.status = SegmentStatus::Destroyed;
-        std::cout << "Destroyed Segment at (" << static_cast<int>(coord.x) 
+        std::cout << "Destroyed segment at (" << static_cast<int>(coord.x)
                   << ", " << static_cast<int>(coord.y) << ")!\n";
       } else {
         segment.status = SegmentStatus::Damaged;
-        std::cout << "Hit segment at (" << static_cast<int>(coord.x) 
-                  << ", " << static_cast<int>(coord.y) << ")!\n";
+        status = ShipStatus::Damaged;
+        std::cout << "Hit segment at (" << static_cast<int>(coord.x) << ", "
+                  << static_cast<int>(coord.y) << ")!\n";
       }
-      break; // Stop checking after hitting a segment
+
+      if (isDestroyed()) {
+        status = ShipStatus::Destroyed;
+        std::cout << "Ship destroyed!\n";
+      }
+
+      break;
     }
   }
 }
-
 void Ship::setSegmentCoord(uint8_t segmentId, Coordinate coord) {
   if (segmentId < size) {
     segments[segmentId].coord = coord;
   } else {
-    throw std::out_of_range("Invalid segment ID.");
+    throw std::out_of_range("Invalid segment ID: " + std::to_string(segmentId));
   }
 }
 
@@ -69,19 +91,17 @@ bool Ship::isDestroyed() noexcept {
   return true;
 }
 
-void Ship::updateOrientation(bool isVertical) noexcept { 
-  vertical = isVertical; 
+void Ship::updateOrientation(bool isVertical) noexcept {
+  vertical = isVertical;
 }
 
-uint8_t Ship::getSize() const noexcept { 
-  return size; 
-}
+uint8_t Ship::getSize() const noexcept { return size; }
 
 uint32_t Ship::generateId() noexcept {
-  auto now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-  return static_cast<uint32_t>(std::hash<uint8_t>()(size)) ^ static_cast<uint32_t>(now);
+  auto now =
+      std::chrono::high_resolution_clock::now().time_since_epoch().count();
+  return static_cast<uint32_t>(std::hash<uint8_t>()(size)) ^
+         static_cast<uint32_t>(now);
 }
 
-uint32_t Ship::getId() const noexcept { 
-  return id; 
-}
+uint32_t Ship::getId() const noexcept { return id; }

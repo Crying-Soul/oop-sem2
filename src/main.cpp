@@ -11,9 +11,9 @@ int main() {
   auto fleet = manager.getAllShips();
 
   for (const auto &ship : fleet) {
-    gameField.placeShipByRandCords(ship);
+    gameField.placeShipByRandCoords(ship);
   }
-  
+
   gameField.display();
 
   return 0;

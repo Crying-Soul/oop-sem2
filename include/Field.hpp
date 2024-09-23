@@ -6,7 +6,6 @@
 #include <iomanip>
 #include <memory>
 
-
 class Field {
 private:
   uint8_t rows;
@@ -37,9 +36,9 @@ public:
   Field &operator=(Field &&other) noexcept;
 
   void attack(Coordinate cord);
-  bool placeShipByCords(const std::shared_ptr<Ship> &ship, Coordinate cord,
-                        bool vertical = false);
-  void placeShipByRandCords(const std::shared_ptr<Ship> &ship);
+  bool placeShipByCoords(const std::shared_ptr<Ship> &ship, Coordinate cord,
+                         bool vertical = false);
+  void placeShipByRandCoords(const std::shared_ptr<Ship> &ship);
   void create() noexcept;
   void display() const noexcept;
   void displayStatus() const noexcept;

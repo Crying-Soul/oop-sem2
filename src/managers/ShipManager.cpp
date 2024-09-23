@@ -17,6 +17,9 @@ void ShipManager::printAllShips() const noexcept {
 
 void ShipManager::createShipsDefault(const std::vector<uint8_t> &sizes) {
   for (const auto &size : sizes) {
+    if (size < 1 || size > 4) {
+      throw std::invalid_argument("Invalid ship size in list.");
+    }
     addShip(std::make_shared<Ship>(size));
   }
 }
@@ -51,7 +54,9 @@ bool ShipManager::checkHit(Coordinate cord) const noexcept {
 void ShipManager::setDamage(Coordinate cord) {
   auto ship = getShipByCords(cord);
   if (!ship) {
-    throw std::invalid_argument("Invalid coordinates");
+    throw std::invalid_argument("Invalid coordinates: no ship at (" +
+                                std::to_string(cord.x) + ", " +
+                                std::to_string(cord.y) + ")");
   }
   ship->handleAttack(cord);
 }
