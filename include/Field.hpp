@@ -5,6 +5,7 @@
 #include "Structures.hpp"
 #include <iomanip>
 #include <memory>
+#include <random>
 
 class Field {
 private:
@@ -22,11 +23,11 @@ private:
     const std::string resetColor = "\033[0m"; // Reset color
   } colors;
 
-  bool isValidCoordinate(Coordinate cord) const noexcept;
-  bool isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
+  bool isValidCoordinate(Coordinate coord) const noexcept;
+  bool isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate coord,
                         bool vertical) const noexcept;
-  CellValue getValueAt(Coordinate cord) const;
-  void setValueAt(Coordinate cord, CellValue value);
+  CellValue getValueAt(Coordinate coord) const;
+  void setValueAt(Coordinate coord, CellValue value);
 
 public:
   Field(uint8_t rowsCount, uint8_t columnsCount) noexcept;
@@ -35,12 +36,12 @@ public:
   Field(Field &&other) noexcept;
   Field &operator=(Field &&other) noexcept;
 
-  void attack(Coordinate cord);
-  bool placeShipByCoords(const std::shared_ptr<Ship> &ship, Coordinate cord,
+  void attack(Coordinate coord);
+  bool placeShipByCoords(const std::shared_ptr<Ship> &ship, Coordinate coord,
                          bool vertical = false);
   void placeShipByRandCoords(const std::shared_ptr<Ship> &ship);
   void create() noexcept;
-  void display() const noexcept;
+  void display(bool isEnemyField = false) const noexcept;
   void displayStatus() const noexcept;
 };
 

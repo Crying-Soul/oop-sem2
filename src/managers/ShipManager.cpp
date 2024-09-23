@@ -29,7 +29,7 @@ std::vector<std::shared_ptr<Ship>> ShipManager::getAllShips() const noexcept {
 }
 
 std::shared_ptr<Ship>
-ShipManager::getShipBy?oords(Coordinate coord) const noexcept {
+ShipManager::getShipByCoords(Coordinate coord) const noexcept {
   for (const auto &ship : ships) {
     if (ship->occupiesCoordinate(coord)) {
       return ship;
@@ -48,11 +48,11 @@ std::shared_ptr<Ship> ShipManager::getShipById(uint32_t id) const noexcept {
 }
 
 bool ShipManager::checkHit(Coordinate coord) const noexcept {
-  return getShipBy?oords(coord) != nullptr;
+  return getShipByCoords(coord) != nullptr;
 }
 
 void ShipManager::setDamage(Coordinate coord) {
-  auto ship = getShipBy?oords(coord);
+  auto ship = getShipByCoords(coord);
   if (!ship) {
     throw std::invalid_argument("Invalid coordinates: no ship at (" +
                                 std::to_string(coord.x) + ", " +

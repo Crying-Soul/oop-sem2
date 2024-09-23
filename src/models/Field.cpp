@@ -47,7 +47,7 @@ void Field::create() noexcept {
   }
 }
 
-void Field::display() const noexcept {
+void Field::display(bool isEnemyField) const noexcept {
   std::cout << colors.headerColor << "    ";
   for (uint8_t x = 0; x < columns; ++x) {
     std::cout << " " << static_cast<char>('A' + x) << " ";
@@ -70,6 +70,14 @@ void Field::display() const noexcept {
       CellValue value = field[y][x].value;
       std::string cellColor;
 
+      if (isEnemyField) {
+
+        if (value == CellValue::ShipPart) {
+          value = CellValue::WaterHidden;
+        }
+      }
+
+      // ќпредел€ем цвет €чейки
       switch (value) {
       case CellValue::WaterHidden:
       case CellValue::WaterRevealed:
@@ -85,6 +93,7 @@ void Field::display() const noexcept {
         cellColor = colors.cellDestroyedColor;
         break;
       }
+
       std::cout << cellColor << " " << static_cast<char>(value) << " "
                 << colors.resetColor << "|";
     }
@@ -158,8 +167,8 @@ bool Field::placeShipByCoords(const std::shared_ptr<Ship> &ship,
   return true;
 }
 
-bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate coord,
-                             bool vertical) const noexcept {
+bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship,
+                             Coordinate coord, bool vertical) const noexcept {
   uint8_t size = ship->getSize();
 
   uint8_t startX = coord.x > 0 ? coord.x - 1 : 0;
@@ -190,12 +199,15 @@ void Field::placeShipByRandCoords(const std::shared_ptr<Ship> &ship) {
   Coordinate newcoord;
   bool placed = false;
 
-  std::srand(static_cast<unsigned int>(std::time(nullptr)));
+  static std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
+  std::uniform_int_distribution<uint8_t> distX(0, columns - 1);
+  std::uniform_int_distribution<uint8_t> distY(0, rows - 1);
+  std::uniform_int_distribution<int> distVert(0, 1);
 
   while (!placed) {
-    newcoord.x = static_cast<uint8_t>(std::rand() % columns);
-    newcoord.y = static_cast<uint8_t>(std::rand() % rows);
-    bool vertical = std::rand() % 2 == 0;
+    newcoord.x = distX(rng);
+    newcoord.y = distY(rng);
+    bool vertical = distVert(rng) == 0;
 
     if (isPlaceAvailable(ship, newcoord, vertical)) {
       placed = placeShipByCoords(ship, newcoord, vertical);

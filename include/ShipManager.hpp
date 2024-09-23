@@ -21,7 +21,7 @@ public:
   void setDamage(Coordinate coord);
   bool attack(Coordinate coord);
 
-  std::shared_ptr<Ship> getShipBy?oords(Coordinate coord) const noexcept;
+  std::shared_ptr<Ship> getShipByCoords(Coordinate coord) const noexcept;
   std::shared_ptr<Ship> getShipById(uint32_t id) const noexcept;
 
   std::vector<std::shared_ptr<Ship>> getAllShips() const noexcept;
