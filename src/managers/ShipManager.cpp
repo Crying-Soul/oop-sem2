@@ -29,9 +29,9 @@ std::vector<std::shared_ptr<Ship>> ShipManager::getAllShips() const noexcept {
 }
 
 std::shared_ptr<Ship>
-ShipManager::getShipByCords(Coordinate cord) const noexcept {
+ShipManager::getShipBy?oords(Coordinate coord) const noexcept {
   for (const auto &ship : ships) {
-    if (ship->occupiesCoordinate(cord)) {
+    if (ship->occupiesCoordinate(coord)) {
       return ship;
     }
   }
@@ -47,24 +47,24 @@ std::shared_ptr<Ship> ShipManager::getShipById(uint32_t id) const noexcept {
   return nullptr;
 }
 
-bool ShipManager::checkHit(Coordinate cord) const noexcept {
-  return getShipByCords(cord) != nullptr;
+bool ShipManager::checkHit(Coordinate coord) const noexcept {
+  return getShipBy?oords(coord) != nullptr;
 }
 
-void ShipManager::setDamage(Coordinate cord) {
-  auto ship = getShipByCords(cord);
+void ShipManager::setDamage(Coordinate coord) {
+  auto ship = getShipBy?oords(coord);
   if (!ship) {
     throw std::invalid_argument("Invalid coordinates: no ship at (" +
-                                std::to_string(cord.x) + ", " +
-                                std::to_string(cord.y) + ")");
+                                std::to_string(coord.x) + ", " +
+                                std::to_string(coord.y) + ")");
   }
-  ship->handleAttack(cord);
+  ship->handleAttack(coord);
 }
 
-bool ShipManager::attack(Coordinate cord) {
-  if (!checkHit(cord)) {
+bool ShipManager::attack(Coordinate coord) {
+  if (!checkHit(coord)) {
     return false;
   }
-  setDamage(cord);
+  setDamage(coord);
   return true;
 }

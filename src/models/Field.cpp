@@ -120,27 +120,27 @@ void Field::displayStatus() const noexcept {
   }
 }
 
-void Field::setValueAt(Coordinate cord, CellValue value) {
-  if (!isValidCoordinate(cord)) {
+void Field::setValueAt(Coordinate coord, CellValue value) {
+  if (!isValidCoordinate(coord)) {
     throw std::out_of_range("Coordinate out of range");
   }
-  field[cord.y][cord.x].value = value;
+  field[coord.y][coord.x].value = value;
 }
 
-CellValue Field::getValueAt(Coordinate cord) const {
-  if (!isValidCoordinate(cord)) {
+CellValue Field::getValueAt(Coordinate coord) const {
+  if (!isValidCoordinate(coord)) {
     throw std::out_of_range("Coordinate out of range");
   }
-  return field[cord.y][cord.x].value;
+  return field[coord.y][coord.x].value;
 }
 
-bool Field::isValidCoordinate(Coordinate cord) const noexcept {
-  return cord.y < rows && cord.x < columns;
+bool Field::isValidCoordinate(Coordinate coord) const noexcept {
+  return coord.y < rows && coord.x < columns;
 }
 
 bool Field::placeShipByCoords(const std::shared_ptr<Ship> &ship,
-                              Coordinate cord, bool vertical) {
-  if (!isPlaceAvailable(ship, cord, vertical)) {
+                              Coordinate coord, bool vertical) {
+  if (!isPlaceAvailable(ship, coord, vertical)) {
     return false;
   }
 
@@ -148,24 +148,24 @@ bool Field::placeShipByCoords(const std::shared_ptr<Ship> &ship,
   int size = ship->getSize();
 
   for (uint8_t i = 0; i < size; ++i) {
-    Coordinate newCord =
-        vertical ? Coordinate{cord.x, static_cast<uint8_t>(cord.y + i)}
-                 : Coordinate{static_cast<uint8_t>(cord.x + i), cord.y};
-    ship->setSegmentCoord(i, newCord);
-    setValueAt(newCord, CellValue::ShipPart);
+    Coordinate newcoord =
+        vertical ? Coordinate{coord.x, static_cast<uint8_t>(coord.y + i)}
+                 : Coordinate{static_cast<uint8_t>(coord.x + i), coord.y};
+    ship->setSegmentCoord(i, newcoord);
+    setValueAt(newcoord, CellValue::ShipPart);
   }
 
   return true;
 }
 
-bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
+bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate coord,
                              bool vertical) const noexcept {
   uint8_t size = ship->getSize();
 
-  uint8_t startX = cord.x > 0 ? cord.x - 1 : 0;
-  uint8_t startY = cord.y > 0 ? cord.y - 1 : 0;
-  uint8_t endX = vertical ? cord.x + 1 : cord.x + size;
-  uint8_t endY = vertical ? cord.y + size : cord.y + 1;
+  uint8_t startX = coord.x > 0 ? coord.x - 1 : 0;
+  uint8_t startY = coord.y > 0 ? coord.y - 1 : 0;
+  uint8_t endX = vertical ? coord.x + 1 : coord.x + size;
+  uint8_t endY = vertical ? coord.y + size : coord.y + 1;
 
   if (endX >= columns || endY >= rows) {
     return false;
@@ -187,28 +187,28 @@ void Field::placeShipByRandCoords(const std::shared_ptr<Ship> &ship) {
   if (!ship)
     return;
 
-  Coordinate newCord;
+  Coordinate newcoord;
   bool placed = false;
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
   while (!placed) {
-    newCord.x = static_cast<uint8_t>(std::rand() % columns);
-    newCord.y = static_cast<uint8_t>(std::rand() % rows);
+    newcoord.x = static_cast<uint8_t>(std::rand() % columns);
+    newcoord.y = static_cast<uint8_t>(std::rand() % rows);
     bool vertical = std::rand() % 2 == 0;
 
-    if (isPlaceAvailable(ship, newCord, vertical)) {
-      placed = placeShipByCoords(ship, newCord, vertical);
+    if (isPlaceAvailable(ship, newcoord, vertical)) {
+      placed = placeShipByCoords(ship, newcoord, vertical);
     }
   }
 }
 
-void Field::attack(Coordinate cord) {
-  if (!isValidCoordinate(cord)) {
+void Field::attack(Coordinate coord) {
+  if (!isValidCoordinate(coord)) {
     std::cout << "Invalid coordinates!\n";
     return;
   }
-  FieldCell &cell = field[cord.y][cord.x];
+  FieldCell &cell = field[coord.y][coord.x];
   switch (cell.value) {
   case CellValue::ShipPart:
     cell.value = CellValue::Hit;
