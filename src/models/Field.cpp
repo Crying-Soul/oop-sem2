@@ -77,7 +77,6 @@ void Field::display(bool isEnemyField) const noexcept {
         }
       }
 
-      // ќпредел€ем цвет €чейки
       switch (value) {
       case CellValue::WaterHidden:
       case CellValue::WaterRevealed:

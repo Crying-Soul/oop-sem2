@@ -24,10 +24,11 @@ public:
   void setSegmentCoord(uint8_t segmentId, Coordinate coord);
   void updateOrientation(bool isVertical) noexcept;
   bool occupiesCoordinate(Coordinate coord) const noexcept;
-  void handleAttack(Coordinate coord);
+  bool handleAttack(Coordinate coord);
   bool isDestroyed() noexcept;
   uint8_t getSize() const noexcept;
   uint32_t getId() const noexcept;
+  SegmentStatus getSegmentStatusAt(Coordinate coord) const;
 };
 
 #endif

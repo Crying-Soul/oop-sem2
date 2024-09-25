@@ -1,28 +1,16 @@
 #include "Field.hpp"
 #include "ShipManager.hpp"
+#include "Game.hpp"
+
 
 int main() {
-  Field userField(10, 10);
-  Field enemyField{userField};
 
-  ShipManager userManager;
-  ShipManager enemyManager;
-  userManager.createShipsDefault();
+  Game game;
 
-  auto userFleet = userManager.getAllShips();
+  game.createMap(10,10);
+  game.createFleet();
 
-  for (const auto &ship : userFleet) {
-    userField.placeShipByRandCoords(ship);
-  }
-  enemyManager.createShipsDefault();
-  auto enemyFleet = enemyManager.getAllShips();
-  for (const auto &ship : enemyFleet) {
-    enemyField.placeShipByRandCoords(ship);
-  }
-
-  userField.display();
-  enemyField.display(false);
-
+  game.userAttack({1,1});
 
   return 0;
 }

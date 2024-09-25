@@ -1,6 +1,19 @@
 #include "ShipManager.hpp"
 #include <iostream>
 
+ShipManager::ShipManager(const std::vector<uint8_t> &sizes) : ships() {
+  createFleet(sizes);
+}
+
+void ShipManager::createFleet(const std::vector<uint8_t> &sizes) {
+  for (const auto &size : sizes) {
+    if (size < 1 || size > 4) {
+      throw std::invalid_argument("Invalid ship size in list.");
+    }
+    addShip(std::make_shared<Ship>(size));
+  }
+}
+
 void ShipManager::addShip(const std::shared_ptr<Ship> &ship) {
   if (ship) {
     ships.push_back(ship);
@@ -15,14 +28,6 @@ void ShipManager::printAllShips() const noexcept {
   }
 }
 
-void ShipManager::createShipsDefault(const std::vector<uint8_t> &sizes) {
-  for (const auto &size : sizes) {
-    if (size < 1 || size > 4) {
-      throw std::invalid_argument("Invalid ship size in list.");
-    }
-    addShip(std::make_shared<Ship>(size));
-  }
-}
 
 std::vector<std::shared_ptr<Ship>> ShipManager::getAllShips() const noexcept {
   return ships;
@@ -61,10 +66,11 @@ void ShipManager::setDamage(Coordinate coord) {
   ship->handleAttack(coord);
 }
 
-bool ShipManager::attack(Coordinate coord) {
-  if (!checkHit(coord)) {
-    return false;
-  }
-  setDamage(coord);
-  return true;
+SegmentStatus ShipManager::attack(Coordinate coord) {
+    auto ship = getShipByCoords(coord);
+    if (!ship) {
+        return SegmentStatus::Intact; 
+    }
+    ship->handleAttack(coord);
+    return ship->getSegmentStatusAt(coord);
 }

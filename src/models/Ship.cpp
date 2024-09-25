@@ -49,30 +49,41 @@ bool Ship::occupiesCoordinate(Coordinate coord) const noexcept {
   return false;
 }
 
-void Ship::handleAttack(Coordinate coord) {
+bool Ship::handleAttack(Coordinate coord) {
   for (auto &segment : segments) {
     if (segment.coord == coord) {
       segment.hp--;
       if (segment.hp <= 0) {
         segment.status = SegmentStatus::Destroyed;
-        std::cout << "Destroyed segment at (" << static_cast<int>(coord.x)
-                  << ", " << static_cast<int>(coord.y) << ")!\n";
-      } else {
-        segment.status = SegmentStatus::Damaged;
-        status = ShipStatus::Damaged;
-        std::cout << "Hit segment at (" << static_cast<int>(coord.x) << ", "
-                  << static_cast<int>(coord.y) << ")!\n";
+        return true;
+        // std::cout << "Destroyed segment at (" << static_cast<int>(coord.x)
+        //           << ", " << static_cast<int>(coord.y) << ")!\n";
       }
+      segment.status = SegmentStatus::Damaged;
+      status = ShipStatus::Damaged;
+      // std::cout << "Hit segment at (" << static_cast<int>(coord.x) << ", "
+      //           << static_cast<int>(coord.y) << ")!\n";
 
       if (isDestroyed()) {
         status = ShipStatus::Destroyed;
-        std::cout << "Ship destroyed!\n";
+        // std::cout << "Ship destroyed!\n";
       }
 
-      break;
+      return true;
     }
   }
+  return false;
 }
+SegmentStatus Ship::getSegmentStatusAt(Coordinate coord) const {
+    for (const auto &segment : segments) {
+        if (segment.coord == coord) {
+            return segment.status;
+        }
+    }
+    throw std::out_of_range("No segment found at the given coordinate.");
+}
+
+
 void Ship::setSegmentCoord(uint8_t segmentId, Coordinate coord) {
   if (segmentId < size) {
     segments[segmentId].coord = coord;
