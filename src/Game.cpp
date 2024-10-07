@@ -1,8 +1,8 @@
 #include "Game.hpp"
 
 Game::Game(uint8_t rows, uint8_t columns)
-    : userField(std::make_shared<Field>(rows, columns)),
-      enemyField(std::make_shared<Field>(rows, columns)), userShipManager(),
+    : userField(Field(rows, columns)),
+      enemyField(Field(rows, columns)), userShipManager(),
       enemyShipManager(), ui() {}
 
 void Game::setupUserFleet(const std::vector<uint8_t> &shipSizes) {
@@ -10,7 +10,7 @@ void Game::setupUserFleet(const std::vector<uint8_t> &shipSizes) {
   auto fleet = userShipManager.getAllShips();
 
   for (const auto &ship : fleet) {
-    userField->placeShipByRandCoords(ship);
+    userField.placeShipByRandCoords(ship);
   }
 }
 
@@ -19,28 +19,27 @@ void Game::setupEnemyFleet(const std::vector<uint8_t> &shipSizes) {
   auto fleet = enemyShipManager.getAllShips();
 
   for (const auto &ship : fleet) {
-    enemyField->placeShipByRandCoords(ship);
+    enemyField.placeShipByRandCoords(ship);
   }
 }
 
 void Game::renderFields() const noexcept {
-  ui.fieldsRender(*userField, *enemyField);
+  ui.fieldsRender(userField, enemyField);
 }
 
-const Field &Game::getUserField() const noexcept { return *userField; }
+const Field &Game::getUserField() const noexcept { return userField; }
 
-const Field &Game::getEnemyField() const noexcept { return *enemyField; }
+const Field &Game::getEnemyField() const noexcept { return enemyField; }
 
-AttackResult Game::attackEnemyField(Coordinate coord) {
-    AttackResult result = enemyField->attack(coord);
+void Game::attackEnemyField(Coordinate coord) {
+    AttackResult result = enemyField.attack(coord);
    
     ui.displayAttackResult(result, coord); 
-    return result;
 }
 
-AttackResult Game::attackUserField(Coordinate coord) {
-    AttackResult result = userField->attack(coord);
+void Game::attackUserField(Coordinate coord) {
+    AttackResult result = userField.attack(coord);
     
     ui.displayAttackResult(result, coord); 
-    return result;
+
 }

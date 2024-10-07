@@ -9,8 +9,8 @@
 
 class Game {
 private:
-  std::shared_ptr<Field> userField;
-  std::shared_ptr<Field> enemyField;
+  Field userField;
+  Field enemyField;
   ShipManager userShipManager;
   ShipManager enemyShipManager;
   UI ui;
@@ -29,8 +29,8 @@ public:
   const Field &getEnemyField() const noexcept;
 
   // Attack methods
-  AttackResult attackEnemyField(Coordinate coord);
-  AttackResult attackUserField(Coordinate coord);
+  void attackEnemyField(Coordinate coord);
+  void attackUserField(Coordinate coord);
 };
 
 #endif // GAME_HPP

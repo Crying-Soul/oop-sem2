@@ -14,26 +14,26 @@ void ShipSegment::setCoord(Coordinate pos) { coord = pos; }
 void ShipSegment::setStatus(SegmentStatus newStatus) { status = newStatus; }
 
 bool ShipSegment::isDestroyed() const noexcept {
-    return status == SegmentStatus::Destroyed;
+  return status == SegmentStatus::Destroyed;
 }
 
 bool ShipSegment::isShipDestroyed() const noexcept {
-    if (auto spt = ship.lock()) {
-        return spt->isShipDestroyed();
-    }
-    return false;
+  if (auto spt = ship.lock()) {
+    return spt->isShipDestroyed();
+  }
+  return false;
 }
 
 void ShipSegment::hit() noexcept {
-    switch (status) {
-        case SegmentStatus::Intact:
-            status = SegmentStatus::Damaged;
-            break;
-        case SegmentStatus::Damaged:
-            status = SegmentStatus::Destroyed;
-            break;
-        case SegmentStatus::Destroyed:
-        default:
-            break;
-    }
+  switch (status) {
+  case SegmentStatus::Intact:
+    status = SegmentStatus::Damaged;
+    break;
+  case SegmentStatus::Damaged:
+    status = SegmentStatus::Destroyed;
+    break;
+  case SegmentStatus::Destroyed:
+  default:
+    break;
+  }
 }

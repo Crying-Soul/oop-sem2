@@ -4,7 +4,7 @@
 #include "Structures.hpp"
 #include <memory>
 
-class Ship; // Forward declaration
+class Ship; 
 
 class ShipSegment {
 public:
@@ -20,7 +20,7 @@ public:
   void hit() noexcept;
 
 private:
-  std::weak_ptr<Ship> ship; // Use weak_ptr to avoid cyclic reference
+  std::weak_ptr<Ship> ship; 
   Coordinate coord;
   SegmentStatus status = SegmentStatus::Intact;
 };

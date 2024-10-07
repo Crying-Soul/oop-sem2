@@ -136,4 +136,3 @@ void UI::displayAttackResult(AttackResult result,
     break;
   }
 }
-

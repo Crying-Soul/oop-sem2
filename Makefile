@@ -1,5 +1,5 @@
 CC := g++
-# CXXFLAGS := -Wall -Wextra -pedantic -Wshadow -Wformat=2 -Wconversion -Weffc++ -Wfloat-equal -fstack-protector-strong -fPIE -pie -O2 -g -fsanitize=address -fsanitize=undefined -fno-strict-aliasing -DDEBUG -fvisibility=hidden
+CXXFLAGS := -Wall -Wextra -pedantic -Wshadow -Wformat=2 -Wconversion -Weffc++ -Wfloat-equal -fstack-protector-strong -fPIE -pie -O2 -g -fsanitize=address -fsanitize=undefined -fno-strict-aliasing -DDEBUG -fvisibility=hidden
 LIBS := 
 SRC_DIR := src
 INCDIR := include

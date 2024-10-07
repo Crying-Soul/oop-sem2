@@ -2,7 +2,6 @@
 #define FIELD_HPP
 
 #include "Ship.hpp"
-#include "ShipSegment.hpp"
 #include "Structures.hpp"
 #include <iomanip>
 #include <memory>
