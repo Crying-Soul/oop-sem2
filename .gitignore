@@ -1,0 +1,4 @@
+.vscode
+obj/*
+*.o
+sea_battle
