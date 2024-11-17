@@ -1,5 +1,5 @@
-#include "ShipSegment.hpp"
-#include "Ship.hpp"
+#include "game/ShipSegment.hpp"
+#include "game/Ship.hpp"
 #include <iostream>
 
 ShipSegment::ShipSegment(std::shared_ptr<Ship> parentShip, Coordinate pos)

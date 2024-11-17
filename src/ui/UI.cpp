@@ -1,4 +1,4 @@
-#include "UI.hpp"
+#include "ui/UI.hpp"
 
 void UI::renderField(const Field &field, bool isEnemyField,
                      bool colorful) const noexcept {

@@ -1,8 +1,10 @@
 #ifndef FIELD_HPP
 #define FIELD_HPP
 
-#include "Ship.hpp"
-#include "Structures.hpp"
+#include "game/Ship.hpp"
+#include "structures/Structures.hpp"
+#include "random/Random.hpp"
+#include <iostream>
 #include <iomanip>
 #include <memory>
 #include <random>

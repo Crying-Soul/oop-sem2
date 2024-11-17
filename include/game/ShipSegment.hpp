@@ -1,7 +1,7 @@
 #ifndef SHIP_SEGMENT_HPP
 #define SHIP_SEGMENT_HPP
 
-#include "Structures.hpp"
+#include "structures/Structures.hpp"
 #include <memory>
 
 class Ship; 

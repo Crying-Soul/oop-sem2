@@ -1,9 +1,9 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "Field.hpp"
-#include "ShipManager.hpp"
-#include "UI.hpp"
+#include "game/Field.hpp"
+#include "game/ShipManager.hpp"
+#include "ui/UI.hpp"
 #include <memory>
 #include <vector>
 

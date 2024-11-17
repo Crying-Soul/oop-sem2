@@ -1,7 +1,5 @@
-#include "Ship.hpp"
-#include <iostream>
-#include <memory>
-#include <stdexcept>
+#include "game/Ship.hpp"
+
 
 Ship::Ship(uint8_t shipSize) : size(shipSize), segments(), vertical(false) {
   if (shipSize < 1 || shipSize > 4) {

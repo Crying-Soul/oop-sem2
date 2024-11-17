@@ -1,7 +1,7 @@
 #ifndef SHIPMANAGER_HPP
 #define SHIPMANAGER_HPP
 
-#include "Ship.hpp"
+#include "game/Ship.hpp"
 #include <memory>
 #include <vector>
 

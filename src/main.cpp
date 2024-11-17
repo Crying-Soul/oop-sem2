@@ -1,6 +1,27 @@
-#include "Game.hpp"
+#include "game/Game.hpp"
+#include "ui/UserInput.hpp"
 
 int main() {
+
+  // UserInput input;
+  // std::string playerName = input.getPlayerName();
+  // std::cout << "Welcome, " << playerName << "!\n";
+
+  // bool useDeafultPreset = input.askUser("Use default game settings?");
+
+  // if (useDeafultPreset) {
+  //   Game game(10, 10);
+  //   game.setupUserFleet();
+  //   game.setupEnemyFleet();
+  //    game.renderFields();
+  // }
+  // else
+  // {
+  //   //ask settings
+  // }
+  
+  
+  
   const uint8_t rows = 10;
   const uint8_t columns = 10;
 
@@ -22,7 +43,7 @@ int main() {
     }
   }
 
-  game.renderFields();
+  // game.renderFields();
 
   return 0;
 }

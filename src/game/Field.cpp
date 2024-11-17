@@ -1,5 +1,4 @@
-#include "Field.hpp"
-#include <iostream>
+#include "game/Field.hpp"
 
 Field::Field(uint8_t rowsCount, uint8_t columnsCount) noexcept
     : rows(rowsCount), columns(columnsCount),
@@ -122,22 +121,18 @@ void Field::placeShipByRandCoords(const std::shared_ptr<Ship> &ship) {
   Coordinate newcoord;
   bool placed = false;
 
-  static std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
-  std::uniform_int_distribution<uint8_t> distX(0, columns - 1);
-  std::uniform_int_distribution<uint8_t> distY(0, rows - 1);
-  std::uniform_int_distribution<int> distVert(0, 1);
+  Random random;
 
   while (!placed) {
-    newcoord.x = distX(rng);
-    newcoord.y = distY(rng);
-    bool vertical = distVert(rng) == 0;
+    newcoord.x = random.getRandomValue<uint8_t>(0, columns - 1);
+    newcoord.y = random.getRandomValue<uint8_t>(0, rows - 1);
+    bool vertical = random.getRandomValue<int>(0, 1) == 0;
 
     if (isPlaceAvailable(ship, newcoord, vertical)) {
       placed = placeShipByCoords(ship, newcoord, vertical);
     }
   }
 }
-
 
 AttackResult Field::attack(Coordinate coord) {
   if (!isValidCoordinate(coord)) {

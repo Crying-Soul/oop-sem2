@@ -1,7 +1,7 @@
 #ifndef UI_HPP
 #define UI_HPP
 
-#include "Field.hpp"
+#include "game/Field.hpp"
 #include <iomanip>
 #include <iostream>
 #include <memory>

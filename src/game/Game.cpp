@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "game/Game.hpp"
 
 Game::Game(uint8_t rows, uint8_t columns)
     : userField(Field(rows, columns)),

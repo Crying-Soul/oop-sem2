@@ -1,4 +1,4 @@
-#include "ShipManager.hpp"
+#include "game/ShipManager.hpp"
 #include <iostream>
 
 void ShipManager::addShip(std::shared_ptr<Ship> ship) {
