@@ -5,6 +5,7 @@
 #include "game/Field.hpp"
 #include "game/ShipManager.hpp"
 #include "random/Random.hpp"
+#include "ui/CLIParser.hpp"
 #include "ui/UI.hpp"
 #include <algorithm>
 #include <memory>
@@ -60,8 +61,8 @@ public:
   AttackResult attackUserField(Coordinate coord);
 
   // Ability Management Methods
-  void useAbility();                // Use an available ability
-  void getRandomAbility();          // Gain a random ability
+  void useAbility(Coordinate coordinate); // Use an available ability
+  void getRandomAbility();                // Gain a random ability
   void printAbilitiesCount() const; // Print the count of abilities available
   void printAvailibleAbilities() const; // Print all available abilities
 
@@ -69,6 +70,9 @@ public:
 
   void placeShipsRandomly(Field &field, ShipManager &shipManager);
 
+
+  void placeShipsManually(const std::vector<uint8_t> &ships, CLIParser &input);
+  void runGameLoop(CLIParser &input);
 };
 
 #endif // GAME_HPP

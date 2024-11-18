@@ -3,6 +3,7 @@
 
 #include "exceptions/AttackExceptions.hpp"
 #include "exceptions/ShipPlaceExceptions.hpp"
+#include "exceptions/OutOfBoundsException.hpp"
 #include "game/Ship.hpp"
 #include "random/Random.hpp"
 #include "structures/Structures.hpp"
@@ -54,7 +55,6 @@ public:
 
   bool placeShipByCoords(const std::shared_ptr<Ship> &ship, Coordinate coord,
                          bool vertical);
-  void placeShipByRandCoords(const std::shared_ptr<Ship> &ship);
   AttackResult attack(Coordinate coord);
 
   bool isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate coord,

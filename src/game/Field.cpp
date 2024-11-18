@@ -48,18 +48,16 @@ uint8_t Field::getRows() const noexcept { return rows; };
 
 void Field::setValueAt(Coordinate coord, CellValue value) {
   if (!isValidCoordinate(coord)) {
-    throw std::out_of_range("Coordinate out of range");
+    throw OutOfBoundsException("Coordinate out of range");
   }
-  field[coord.y][coord.x].value =
-      value; // Access using [y][x] for rows and columns
+  field[coord.y][coord.x].value = value;
 }
 
 const Field::CellValue &Field::getValueAt(Coordinate coord) const {
   if (!isValidCoordinate(coord)) {
-    throw std::out_of_range("Coordinate out of range");
+    throw OutOfBoundsException("Coordinate out of range");
   }
-  return field[coord.y][coord.x]
-      .value; // Access using [y][x] for rows and columns
+  return field[coord.y][coord.x].value;
 }
 
 bool Field::isValidCoordinate(Coordinate coord) const noexcept {
@@ -93,8 +91,9 @@ bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship,
 
 bool Field::placeShipByCoords(const std::shared_ptr<Ship> &ship,
                               Coordinate coord, bool vertical) {
+
   if (!isPlaceAvailable(ship, coord, vertical)) {
-    return false;
+    throw ShipPlacementException("Invalid ship placement");
   }
 
   ship->setOrientation(vertical);
@@ -105,6 +104,10 @@ bool Field::placeShipByCoords(const std::shared_ptr<Ship> &ship,
     const uint8_t y = vertical ? static_cast<uint8_t>(coord.y + i) : coord.y;
 
     Coordinate newCoord{x, y};
+
+    if (field[y][x].segment != nullptr) {
+      throw ShipIntersectionException("Ship intersects with another ship");
+    }
 
     ShipSegment &segment = ship->getSegment(i);
     segment.setCoord(newCoord);
@@ -132,7 +135,6 @@ AttackResult Field::attack(Coordinate coord) {
       cell.value = CellValue::Destroyed;
 
       if (cell.segment->isShipDestroyed()) {
-        // ???? ???? ??????? ?????????, ???????? ???????
         for (auto segment : cell.segment->getShip()->getSegments()) {
           Coordinate segmentCoord = segment->getCoord();
 
@@ -145,13 +147,11 @@ AttackResult Field::attack(Coordinate coord) {
                   static_cast<uint8_t>(segmentCoord.x + dx),
                   static_cast<uint8_t>(segmentCoord.y + dy)};
 
-              // ?????????, ??? ?????????? ????????? ? ???????? ????
               if (isValidCoordinate(surroundingCoord)) {
                 FieldCell &surroundingCell =
                     field[surroundingCoord.y][surroundingCoord.x];
                 surroundingCell.status = CellStatus::Revealed;
 
-                // ???? ?????? ??????? ???? ????, ???????? ?? ??? ?????????
                 if (surroundingCell.value == CellValue::WaterHidden) {
                   surroundingCell.value = CellValue::WaterRevealed;
                 }
@@ -159,16 +159,15 @@ AttackResult Field::attack(Coordinate coord) {
             }
           }
         }
-        return AttackResult::ShipDestroyed; // ?????????? ????????? ? ??????
-                                            // ??????????? ???????
+        return AttackResult::ShipDestroyed;
+
       } else {
-        return AttackResult::SegmentDestroyed; // ?????????? ????????? ?
-                                               // ?????????? ????????
+        return AttackResult::SegmentDestroyed;
       }
     }
-    return AttackResult::Hit; // ???? ??????? ??? ?? ?????????
+    return AttackResult::Hit;
   } else {
     cell.value = CellValue::WaterRevealed;
-    return AttackResult::Miss; // ???? ?????? ? ?????? ????? (????)
+    return AttackResult::Miss;
   }
 }

@@ -1,5 +1,5 @@
 #include <string>
-
+#include <exception>
 class ShipPlacementException : public std::exception {
 public:
     explicit ShipPlacementException(const std::string& arg_message)

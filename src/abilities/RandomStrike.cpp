@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-void RandomStrike::use(Game &game) const {
+void RandomStrike::use(Game &game, Coordinate coord) const {
   ShipManager enemyManager = game.getEnemyShipManager();
   auto enemyFleet = enemyManager.getAllShips();
 

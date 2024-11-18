@@ -4,6 +4,7 @@
 #include "abilities/Ability.hpp"        // Include Ability before anything else
 #include "abilities/AbilityFactory.hpp"
 #include "exceptions/AbilityExceptions.hpp"
+#include "structures/Structures.hpp"
 #include <queue>
 #include <iostream>
 
@@ -14,7 +15,7 @@ private:
 public:
   AbilityManager();
   ~AbilityManager();
-  void useAbility(Game &game);
+  void useAbility(Game &game, Coordinate coord);
   void getRandomAbility();
   void printAbilitiesCount() const;
   void printAvailible() const;

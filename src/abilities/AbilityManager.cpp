@@ -20,13 +20,13 @@ Ability::AbilityType AbilityManager::getAbilityType() const {
   return abilities.front()->getType();
 }
 
-void AbilityManager::useAbility(Game &game) {
+void AbilityManager::useAbility(Game &game, Coordinate coord) {
   if (abilities.empty()) {
     throw AbilityException("Empty ability queue");
   }
 
   Ability *ability = abilities.front();
-  ability->use(game);
+  ability->use(game, coord);
   abilities.pop();
   delete ability;
 }

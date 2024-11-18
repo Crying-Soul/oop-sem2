@@ -20,6 +20,6 @@ Ability* AbilityFactory::createAbility(Ability::AbilityType type) {
 
 Ability* AbilityFactory::createRandomAbility() {
     Random rnd;
-    int random = rnd.getRandomValue(0,2);
+    int random = rnd.getRandomValue(1,1);
     return createAbility(static_cast<Ability::AbilityType>(random));
 }

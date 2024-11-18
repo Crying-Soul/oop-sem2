@@ -8,7 +8,7 @@
 
 class RandomStrike : public Ability {
 public:
-    void use(Game &game) const override;
+    void use(Game &game, Coordinate coord) const override;
 
 
     std::string getName() const override;

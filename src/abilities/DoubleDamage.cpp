@@ -1,6 +1,6 @@
 #include "abilities/DoubleDamage.hpp"
 
-void DoubleDamage::use(Game &game) const {
+void DoubleDamage::use(Game &game, Coordinate coord) const {
 
   std::cout << "Double damage activated!" << std::endl;
   game.activateDoubleDamage();
