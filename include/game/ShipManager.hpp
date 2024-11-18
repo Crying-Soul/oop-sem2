@@ -13,7 +13,8 @@ public:
   ShipManager() : ships() {};
 
   void addShip(std::shared_ptr<Ship> ship);
-  void createShipsDefault(const std::vector<uint8_t> &sizes );
+  std::shared_ptr<Ship> createShip(uint8_t size);
+  void createFleet(const std::vector<uint8_t> &sizes );
 
   std::shared_ptr<Ship> getShipByCoords(Coordinate coord) noexcept;
 

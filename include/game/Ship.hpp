@@ -18,9 +18,13 @@ public:
   bool occupiesCoordinate(Coordinate coord) const noexcept;
   bool isShipDestroyed() const noexcept;
 
+
+  const std::vector<std::shared_ptr<ShipSegment>>& getSegments() const noexcept;
+
 private:
   uint8_t size;
   std::vector<std::shared_ptr<ShipSegment>> segments;
+  
   bool vertical;
 };
 

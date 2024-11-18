@@ -70,7 +70,7 @@ void UI::fieldsRender(const Field &userField, const Field &enemyField,
   renderField(userField, false, colorful);
 
   std::cout << "\nEnemy's Field:\n";
-  renderField(enemyField, true, colorful);
+  renderField(enemyField, false, colorful);
 }
 
 void UI::renderShipState(const std::shared_ptr<Ship> &ship) const noexcept {

@@ -9,11 +9,18 @@ void ShipManager::addShip(std::shared_ptr<Ship> ship) {
   }
 }
 
+std::shared_ptr<Ship> ShipManager::createShip(uint8_t size) {
+  auto ship = std::make_shared<Ship>(size);
+  ship->initializeSegments();
+  addShip(ship);
+  return ship;
+}
+
 std::vector<std::shared_ptr<Ship>> &ShipManager::getAllShips() noexcept {
   return ships;
 }
 
-void ShipManager::createShipsDefault(const std::vector<uint8_t> &sizes) {
+void ShipManager::createFleet(const std::vector<uint8_t> &sizes) {
   for (const auto &size : sizes) {
     if (size < 1 || size > 4) {
       throw std::invalid_argument("Invalid ship size in list.");

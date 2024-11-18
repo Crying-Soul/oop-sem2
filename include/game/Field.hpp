@@ -1,11 +1,13 @@
 #ifndef FIELD_HPP
 #define FIELD_HPP
 
+#include "exceptions/AttackExceptions.hpp"
+#include "exceptions/ShipPlaceExceptions.hpp"
 #include "game/Ship.hpp"
-#include "structures/Structures.hpp"
 #include "random/Random.hpp"
-#include <iostream>
+#include "structures/Structures.hpp"
 #include <iomanip>
+#include <iostream>
 #include <memory>
 #include <random>
 
@@ -35,11 +37,6 @@ private:
 
   std::vector<std::vector<FieldCell>> field;
 
-  bool isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate cord,
-                        bool vertical) const noexcept;
-
-  bool isValidCoordinate(Coordinate coord) const noexcept;
-
 public:
   Field(uint8_t rowsCount, uint8_t columnsCount) noexcept;
   Field(const Field &other);
@@ -51,16 +48,19 @@ public:
   uint8_t getColumns() const noexcept;
   uint8_t getRows() const noexcept;
   const CellValue &getValueAt(Coordinate cord) const;
-  
+
   // ?SETTERS
   void setValueAt(Coordinate cord, CellValue value);
 
   bool placeShipByCoords(const std::shared_ptr<Ship> &ship, Coordinate coord,
                          bool vertical);
   void placeShipByRandCoords(const std::shared_ptr<Ship> &ship);
-    AttackResult attack(Coordinate coord);
+  AttackResult attack(Coordinate coord);
 
+  bool isPlaceAvailable(const std::shared_ptr<Ship> &ship, Coordinate coord,
+                        bool vertical) const;
 
+  bool isValidCoordinate(Coordinate coord) const noexcept;
 };
 
 #endif

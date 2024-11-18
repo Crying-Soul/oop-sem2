@@ -13,11 +13,14 @@ public:
   ShipSegment(std::shared_ptr<Ship> parentShip, Coordinate pos = {0, 0});
   SegmentStatus getStatus() const;
   Coordinate getCoord() const;
+
   void setCoord(Coordinate pos);
   void setStatus(SegmentStatus newStatus);
   bool isDestroyed() const noexcept;
   bool isShipDestroyed() const noexcept;
   void hit() noexcept;
+
+  std::shared_ptr<Ship> getShip() const;
 
 private:
   std::weak_ptr<Ship> ship; 

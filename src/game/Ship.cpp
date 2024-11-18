@@ -44,3 +44,6 @@ bool Ship::isShipDestroyed() const noexcept {
   }
   return true;
 }
+const std::vector<std::shared_ptr<ShipSegment>>& Ship::getSegments() const noexcept {
+  return segments;
+}

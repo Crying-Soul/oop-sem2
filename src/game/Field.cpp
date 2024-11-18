@@ -50,14 +50,16 @@ void Field::setValueAt(Coordinate coord, CellValue value) {
   if (!isValidCoordinate(coord)) {
     throw std::out_of_range("Coordinate out of range");
   }
-  field[coord.y][coord.x].value = value;
+  field[coord.y][coord.x].value =
+      value; // Access using [y][x] for rows and columns
 }
 
 const Field::CellValue &Field::getValueAt(Coordinate coord) const {
   if (!isValidCoordinate(coord)) {
     throw std::out_of_range("Coordinate out of range");
   }
-  return field[coord.y][coord.x].value;
+  return field[coord.y][coord.x]
+      .value; // Access using [y][x] for rows and columns
 }
 
 bool Field::isValidCoordinate(Coordinate coord) const noexcept {
@@ -65,7 +67,7 @@ bool Field::isValidCoordinate(Coordinate coord) const noexcept {
 }
 
 bool Field::isPlaceAvailable(const std::shared_ptr<Ship> &ship,
-                             Coordinate coord, bool vertical) const noexcept {
+                             Coordinate coord, bool vertical) const {
   uint8_t size = ship->getSize();
 
   uint8_t startX = coord.x > 0 ? coord.x - 1 : 0;
@@ -107,40 +109,19 @@ bool Field::placeShipByCoords(const std::shared_ptr<Ship> &ship,
     ShipSegment &segment = ship->getSegment(i);
     segment.setCoord(newCoord);
 
-    field[x][y].segment = &segment;
+    field[y][x].segment = &segment;
     setValueAt(newCoord, CellValue::ShipPart);
   }
 
   return true;
 }
 
-void Field::placeShipByRandCoords(const std::shared_ptr<Ship> &ship) {
-  if (!ship)
-    return;
-
-  Coordinate newcoord;
-  bool placed = false;
-
-  Random random;
-
-  while (!placed) {
-    newcoord.x = random.getRandomValue<uint8_t>(0, columns - 1);
-    newcoord.y = random.getRandomValue<uint8_t>(0, rows - 1);
-    bool vertical = random.getRandomValue<int>(0, 1) == 0;
-
-    if (isPlaceAvailable(ship, newcoord, vertical)) {
-      placed = placeShipByCoords(ship, newcoord, vertical);
-    }
-  }
-}
-
 AttackResult Field::attack(Coordinate coord) {
   if (!isValidCoordinate(coord)) {
-    return AttackResult::Miss;
+    throw AttackException("Attack out of bounds.");
   }
 
-  FieldCell &cell = field[coord.x][coord.y];
-
+  FieldCell &cell = field[coord.y][coord.x];
   cell.status = CellStatus::Revealed;
 
   if (cell.segment != nullptr) {
@@ -151,33 +132,43 @@ AttackResult Field::attack(Coordinate coord) {
       cell.value = CellValue::Destroyed;
 
       if (cell.segment->isShipDestroyed()) {
+        // ???? ???? ??????? ?????????, ???????? ???????
+        for (auto segment : cell.segment->getShip()->getSegments()) {
+          Coordinate segmentCoord = segment->getCoord();
 
-        for (int dx = -1; dx <= 1; ++dx) {
           for (int dy = -1; dy <= 1; ++dy) {
+            for (int dx = -1; dx <= 1; ++dx) {
+              if (dx == 0 && dy == 0)
+                continue;
 
-            if (dx == 0 && dy == 0)
-              continue;
+              Coordinate surroundingCoord = {
+                  static_cast<uint8_t>(segmentCoord.x + dx),
+                  static_cast<uint8_t>(segmentCoord.y + dy)};
 
-            Coordinate surroundingCoord = {static_cast<uint8_t>(coord.x + dx),
-                                           static_cast<uint8_t>(coord.y + dy)};
+              // ?????????, ??? ?????????? ????????? ? ???????? ????
+              if (isValidCoordinate(surroundingCoord)) {
+                FieldCell &surroundingCell =
+                    field[surroundingCoord.y][surroundingCoord.x];
+                surroundingCell.status = CellStatus::Revealed;
 
-            if (isValidCoordinate(surroundingCoord)) {
-              FieldCell &surroundingCell =
-                  field[surroundingCoord.x][surroundingCoord.y];
-              surroundingCell.status = CellStatus::Revealed;
-
-              surroundingCell.value = CellValue::WaterRevealed;
+                // ???? ?????? ??????? ???? ????, ???????? ?? ??? ?????????
+                if (surroundingCell.value == CellValue::WaterHidden) {
+                  surroundingCell.value = CellValue::WaterRevealed;
+                }
+              }
             }
           }
         }
-        return AttackResult::ShipDestroyed;
+        return AttackResult::ShipDestroyed; // ?????????? ????????? ? ??????
+                                            // ??????????? ???????
       } else {
-        return AttackResult::SegmentDestroyed;
+        return AttackResult::SegmentDestroyed; // ?????????? ????????? ?
+                                               // ?????????? ????????
       }
     }
-    return AttackResult::Hit;
+    return AttackResult::Hit; // ???? ??????? ??? ?? ?????????
   } else {
     cell.value = CellValue::WaterRevealed;
-    return AttackResult::Miss;
+    return AttackResult::Miss; // ???? ?????? ? ?????? ????? (????)
   }
 }

@@ -37,3 +37,6 @@ void ShipSegment::hit() noexcept {
     break;
   }
 }
+std::shared_ptr<Ship> ShipSegment::getShip() const {
+  return ship.lock();
+}
